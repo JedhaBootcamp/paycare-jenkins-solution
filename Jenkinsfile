@@ -23,7 +23,7 @@ pipeline {
                 script {
                     
                     // Run the Docker container with mounted input/output files
-                    sh 'docker run --rm -v  $(pwd):/app ${DOCKER_IMAGE} pytest --junitxml=unit-tests.xml'
+                    sh 'docker run --rm -v  $(pwd)/tests:/app/tests ${DOCKER_IMAGE} pytest --junitxml=tests/unit-tests.xml'
                 }
             }
         }
