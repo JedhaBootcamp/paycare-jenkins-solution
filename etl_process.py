@@ -1,43 +1,53 @@
-import pytest
 import pandas as pd
-from io import StringIO
-from etl_process import extract_data, transform_data, load_data
 
-# Test for data extraction
-def test_extract_data():
-    csv_data = StringIO("employee_id,employee_name,salary\n101,Alice,5000\n102,Bob,6000")
-    data = pd.read_csv(csv_data)
-    assert data is not None
-    assert len(data) == 2
+# Step 1: Extract
+def extract_data(file_path):
+    """Extracts data from a CSV file."""
+    try:
+        data = pd.read_csv(file_path)
+        print("Data extraction successful.")
+        return data
+    except Exception as e:
+        print(f"Error in data extraction: {e}")
+        return None
 
-# Test for data transformation
-def test_transform_data():
-    data = pd.DataFrame({
-        'employee_id': [101, 102],
-        'employee_name': ['Alice', 'Bob'],
-        'salary': [5000, 6000]
-    })
-    
-    transformed_data = transform_data(data)
-    assert 'tax' in transformed_data.columns
-    assert 'net_salary' in transformed_data.columns
-    assert transformed_data['tax'][0] == 500  # 10% of 5000
-    assert transformed_data['net_salary'][0] == 4500  # 5000 - 500
+# Step 2: Transform
+def transform_data(data):
+    """Transforms the data by cleaning and adding new features."""
+    try:
+        # Drop rows with missing values
+        data_cleaned = data.dropna()
+        
+        # Add a new column for Tax (assuming a flat 10% tax rate on salary)
+        data_cleaned['tax'] = data_cleaned['salary'] * 0.1
+        
+        # Calculate net salary after tax
+        data_cleaned['net_salary'] = data_cleaned['salary'] - data_cleaned['tax']
+        
+        print("Data transformation successful.")
+        return data_cleaned
+    except Exception as e:
+        print(f"Error in data transformation: {e}")
+        return None
 
-# Test for data loading
-def test_load_data(tmpdir):
-    data = pd.DataFrame({
-        'employee_id': [101],
-        'employee_name': ['Alice'],
-        'salary': [5000],
-        'tax': [500],
-        'net_salary': [4500]
-    })
-    
-    output_file = tmpdir.join("output_data.csv")
-    load_data(data, str(output_file))
-    loaded_data = pd.read_csv(output_file)
-    
-    assert len(loaded_data) == 1
-    assert loaded_data['employee_name'][0] == 'Alice'
-    assert loaded_data['net_salary'][0] == 4500
+# Step 3: Load
+def load_data(data, output_file_path):
+    """Loads the transformed data into a new CSV file."""
+    try:
+        data.to_csv(output_file_path, index=False)
+        print(f"Data loaded successfully to {output_file_path}.")
+    except Exception as e:
+        print(f"Error in data loading: {e}")
+
+# Main ETL function
+def etl_process(input_file, output_file):
+    data = extract_data(input_file)
+    if data is not None:
+        transformed_data = transform_data(data)
+        if transformed_data is not None:
+            load_data(transformed_data, output_file)
+
+if __name__ == "__main__":
+    input_file = 'input_data.csv'
+    output_file = 'output_data.csv'
+    etl_process(input_file, output_file)

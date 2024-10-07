@@ -18,6 +18,16 @@ pipeline {
             }
         }
 
+        stage('Run unit tests in Docker Container') {
+            steps {
+                script {
+                    
+                    // Run the Docker container with mounted input/output files
+                    sh 'docker run --rm -v  $(pwd):/app ${DOCKER_IMAGE} pytest --junitxml=unit-tests.xml'
+                }
+            }
+        }
+
         stage('Run Docker Container') {
             steps {
                 script {
