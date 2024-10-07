@@ -8,24 +8,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/your-username/paycare-etl.git'
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                sh 'pip install -r requirements.txt'
-            }
-        }
-
-        stage('Run Unit Tests') {
-            steps {
-                sh 'pytest --junitxml=unit-tests.xml'
-            }
-            post {
-                always {
-                    junit 'unit-tests.xml'  // Publish test results
-                }
+                git branch: 'main', url:'https://github.com/JedhaBootcamp/paycare-jenkins-solution.git'
             }
         }
 

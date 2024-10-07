@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . /app
 
 # Install any needed packages specified in requirements.txt
-RUN pip install pandas
+RUN pip install pandas pytest
 
 # Make a volume mount point for the input/output CSV files
 VOLUME ["/app/input_data.csv", "/app/output_data.csv"]
