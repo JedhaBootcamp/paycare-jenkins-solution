@@ -14,6 +14,7 @@ def extract_data(file_path):
 # Step 2: Transform
 def transform_data(data):
     """Transforms the data by cleaning and adding new features."""
+    print("columns", data.columns)
     try:
         # Drop rows with missing values
         data_cleaned = data.dropna()
