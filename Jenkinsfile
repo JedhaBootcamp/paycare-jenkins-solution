@@ -32,10 +32,10 @@ pipeline {
             steps {
                 script {
                     // Create input data file dynamically
-                    sh 'echo "employee_id,employee_name,salary\n101,Alice,5000\n102,Bob,7000" > input_data.csv'
+                    sh 'echo -e "employee_id,employee_name,salary \n 101,Alice,5000 \n 102,Bob,7000" > input_data.csv'
 
                     // Run the Docker container with mounted input/output files
-                    sh 'docker run --rm -v $(pwd)/input_data.csv:/app/input_data.csv -v $(pwd)/output_data.csv:/app/output_data.csv ${DOCKER_IMAGE}'
+                    sh 'docker run --rm -v $(pwd):/app ${DOCKER_IMAGE}'
                 }
             }
         }
